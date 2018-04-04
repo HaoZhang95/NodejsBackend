@@ -1,0 +1,56 @@
+<%- include ../public/header.ejs%>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-sm-2">
+            <%- include ../public/aslideleft.ejs%>
+			
+          
+        </div>
+        <div class="col-sm-10">
+            <ol class="breadcrumb">
+                <li class="active">Images
+                </li>
+                <li class="active">List
+                </li>
+            </ol>
+            <div class="panel panel-default">
+              
+			    <div class="panel-heading">
+                  Insert New
+                </div>
+                <div class="panel-body">
+                    <div class="table-responsive input-form">
+                        <form action="/admin/image/doimageAdd" enctype="multipart/form-data"  method="post">
+                            <ul>
+                                <li>  Item Title: <input type="text" name="title"/></li>
+
+                                <li>  PiSource: <input type="file" name="pic"/></li>
+                                <li>  Category: <input type="text" name="category"/></li>
+
+                                <li>
+                                    Details:
+                                    <textarea name="desc" id="" cols="60" rows="8"></textarea>
+                                </li>
+
+                                <li>
+                                    <br/>
+                                    <button type="submit" class="btn btn-default">Submit</button>
+                                </li>
+
+                            </ul>
+
+
+                        </form>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
