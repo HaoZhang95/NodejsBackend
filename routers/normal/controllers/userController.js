@@ -32,8 +32,8 @@ exports.userSignup = (req,res,next) =>{
                         _id: new DB.ObjectID,
                         username: username,
                         createTime: new Date(),
-                        status: 0,
-                        password: hash
+                        status: 1,
+                        password: password
                     }
 
                     const token = jwt.sign({

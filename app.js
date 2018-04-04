@@ -14,6 +14,7 @@ const categoryRouter = require('./routers/normal/routes/category')
 
 const port = process.env.PORT || 8888
 
+console.log(md5('admin'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(morgan('dev'));
