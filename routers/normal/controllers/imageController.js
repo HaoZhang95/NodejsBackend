@@ -15,7 +15,10 @@ exports.doUpload = (req,res,next) =>{
             const userId = textFields.userId[0]
             const category = textFields.category[0]
             const pic = files.pic[0].path
+
+            console.log(userId);
             _id = DB.ObjectID(userId)
+            console.log(_id);
 
             const obj = {
                 userId: userId,

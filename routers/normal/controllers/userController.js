@@ -112,7 +112,7 @@ exports.userLogin = (req,res,next) =>{
                 })
             }
             res.status(401).json({
-                message:"Auth failed, token is missing or incorrect.",
+                message:"Auth failed, password is incorrect.",
             });
         })
 
