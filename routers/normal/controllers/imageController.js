@@ -10,7 +10,6 @@ exports.doUpload = (req,res,next) =>{
 
     form.parse(req, (error, textFields, files) => {
 
-
         try {
             const userId = textFields.userId[0]
             const category = textFields.category[0]
