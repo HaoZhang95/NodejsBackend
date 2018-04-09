@@ -133,17 +133,31 @@ router.get('/delete',(req,res) =>{
     const id = req.query.id;
 
     /* 利用id去数据库查找, 自增长的id要用DB.ObjectID(id)来获取数据化的id来匹配 */
-    DB.delete('image', {
+
+    DB.find('image', {
         "_id": new DB.ObjectID(id),
     },  (error, data) =>{
 
-        if (! error) {
-            res.redirect('/admin/image')
-        }
+        console.log(data[0].pic);
+        const filePath = data[0].pic
+
+        fs.unlink(filePath, function(err){
+            if (err) {
+                console.log('Error: no such file or directory, may deleted already.');
+            }
+
+            DB.delete('image', {
+                "_id": new DB.ObjectID(id),
+            },  (error, data) =>{
+                if (! error) {
+                    console.log('从数据库删除成功');
+                    res.redirect('/admin/image')
+                }
+            })
+
+        });
 
     })
-
 })
-
 
 module.exports = router
