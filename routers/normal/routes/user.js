@@ -14,6 +14,6 @@ router.get('/:userId',checkAuth, UserController.getUserInfoById);
 
 router.put('/',checkAuth, UserController.updateUsername);
 
-router.get('/', UserController.getAllUsers)
+router.get('/', checkAuth, UserController.getAllUsers)
 
 module.exports=router;
