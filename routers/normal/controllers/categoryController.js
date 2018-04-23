@@ -18,6 +18,51 @@ exports.getAllCategories = (req,res,next)=>{
     })
 }
 
+exports.addNewCategory = (req,res,next)=>{
+
+    const categoryName = req.body.name
+
+    console.log(categoryName);
+
+    DB.find('category',{name: categoryName}, (error, category) =>{
+        if (error) {
+            return res.status(500).json({
+                error: err
+            })
+        }
+
+        if(category.length > 0){
+            res.status(409).json({
+                message:'category name exists already.'
+            })
+        }else{
+            const category = {
+                _id: new DB.ObjectID,
+                name: categoryName,
+                createTime: new Date(),
+            }
+
+            //資料傳進來的格式不符合email的re就會傳出error
+            DB.insert('category', category, (error, data) =>{
+                if (error) {
+                    return res.status(500).json({
+                        error : err
+                    })
+                }
+                res.status(201).json({
+                    message:'Category created successfully.',
+                    category: {
+                        _id: category._id,
+                        name: categoryName,
+                        createTime: category.createTime,
+                    }
+                });
+            })
+        }
+
+    })
+}
+
 exports.getCategoryById = (req,res,next) =>{
 
     const categoryId = req.params.categoryId
