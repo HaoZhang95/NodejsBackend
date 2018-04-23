@@ -180,7 +180,7 @@ exports.updateUsername = (req,res,next) =>{
                                             username: newName,
                                             createTime: user[0].createTime,
                                             status: user[0].status,
-                                            points: user[0].points + EACH_POINT,
+                                            points: user[0].points,
                                         }
 
                                     })

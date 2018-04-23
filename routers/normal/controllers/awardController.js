@@ -21,7 +21,7 @@ exports.updatePoints = (req,res,next) =>{
 
             if(user.length <= 0){
                 res.status(500).json({
-                    message:'Get nothing with this user id.'
+                    message:'Get nothing with this user id or user id does not exist.'
                 })
             } else {
                 DB.update('user',
@@ -46,16 +46,6 @@ exports.updatePoints = (req,res,next) =>{
 
                         })
                     })
-
-                // res.status(200).json({
-                //     message:'Get user info sucessfully',
-                //     user: {
-                //         _id: user[0]._id,
-                //         username: user[0].username,
-                //         createTime: user[0].createTime,
-                //         status: user[0].status
-                //     }
-                // })
             }
         })
 
