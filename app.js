@@ -11,6 +11,7 @@ const index = require('./routers/index')
 const userRouter = require('./routers/normal/routes/user');
 const imageRouter = require('./routers/normal/routes/image');
 const categoryRouter = require('./routers/normal/routes/category')
+const awardRouter = require('./routers/normal/routes/award')
 
 const port = process.env.PORT || 8888
 
@@ -33,6 +34,7 @@ app.use('/', index)
 app.use('/user', userRouter);
 app.use('/image', imageRouter);
 app.use('/category', categoryRouter);
+app.use('/award', awardRouter);
 app.use('/admin', admin)
 
 app.listen(port);

@@ -11,7 +11,7 @@ exports.getAllCategories = (req,res,next)=>{
                 category: data,
             });
         }else {
-            res.status(500).json({
+            res.status(400).json({
                 message:'Get all categories failed.'
             });
         }
@@ -26,13 +26,13 @@ exports.addNewCategory = (req,res,next)=>{
 
     DB.find('category',{name: categoryName}, (error, category) =>{
         if (error) {
-            return res.status(500).json({
+            return res.status(400).json({
                 error: err
             })
         }
 
         if(category.length > 0){
-            res.status(409).json({
+            res.status(400).json({
                 message:'category name exists already.'
             })
         }else{
@@ -45,7 +45,7 @@ exports.addNewCategory = (req,res,next)=>{
             //資料傳進來的格式不符合email的re就會傳出error
             DB.insert('category', category, (error, data) =>{
                 if (error) {
-                    return res.status(500).json({
+                    return res.status(400).json({
                         error : err
                     })
                 }
@@ -73,14 +73,14 @@ exports.getCategoryById = (req,res,next) =>{
 
         DB.find('category',{_id: _id},function (error, data) {
             if (error) {
-                return res.status(500).json({
+                return res.status(400).json({
                     message:'Get category failed, cause database connection.',
                     error: error
                 })
             }
 
             if(data.length <= 0){
-                res.status(500).json({
+                res.status(400).json({
                     message:'Category id is missing or incorrect.'
                 })
             } else {

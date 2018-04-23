@@ -36,14 +36,14 @@ exports.doUpload = (req,res,next) =>{
                         image: obj
                     });
                 }else {
-                    res.status(500).json({
+                    res.status(400).json({
                         message:'Image upload failed.'
                     });
                 }
             })
 
         } catch (error) {
-            res.status(500).json({
+            res.status(400).json({
                 message:'Format of user id is incorrect or other attributes missing.',
             })
         }
@@ -62,14 +62,14 @@ exports.getImagesByUserId = (req,res,next) =>{
 
         DB.find('image',{userId: userId}, (error, images) =>{
             if (error) {
-                return res.status(500).json({
+                return res.status(400).json({
                     message:'Get images failed, cause database connection.',
                     error: error
                 })
             }
 
             if(images.length <= 0){
-                res.status(500).json({
+                res.status(400).json({
                     message:'Get nothing with this user id.'
                 })
             } else {
@@ -97,13 +97,13 @@ exports.doImageDelete = (req,res,next) =>{
 
         DB.find('image',{_id: _id}, (error, image) =>{
             if (error) {
-                return res.status(500).json({
+                return res.status(400).json({
                     message:'image delete failed, cause database connection.'
                 })
             }
 
             if(image.length <= 0){
-                res.status(500).json({
+                res.status(400).json({
                     message:'imageId id is missing or incorrect. '
                 })
             } else {
@@ -111,7 +111,7 @@ exports.doImageDelete = (req,res,next) =>{
                     "_id": _id
                 }, (error, data) => {
                     if (error) {
-                        res.status(500).json({
+                        res.status(400).json({
                             message:'image delete failed.',
                         })
                     } else {
@@ -126,7 +126,7 @@ exports.doImageDelete = (req,res,next) =>{
         })
 
     } catch (error) {
-        res.status(500).json({
+        res.status(400).json({
             message:'Format of image id is incorrect. '
         })
     }

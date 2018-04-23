@@ -4,6 +4,8 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
 const keyForToken = "secret"
 
+const EACH_POINT = 10
+
 exports.userSignup = (req,res,next) =>{
 
     const username = req.body.username
@@ -11,7 +13,7 @@ exports.userSignup = (req,res,next) =>{
 
     DB.find('user',{username: username}, (error, user) =>{
         if (error) {
-            return res.status(500).json({
+            return res.status(400).json({
                 error: err
             })
         }
@@ -24,7 +26,7 @@ exports.userSignup = (req,res,next) =>{
 
             bcrypt.hash(password,10,(err,hash)=>{
                 if(err){
-                    return res.status(500).json({
+                    return res.status(400).json({
                         error: err
                     });
                 }else{
@@ -33,6 +35,7 @@ exports.userSignup = (req,res,next) =>{
                         username: username,
                         createTime: new Date(),
                         status: 0,
+                        points: 0,
                         password: hash
                     }
 
@@ -46,7 +49,7 @@ exports.userSignup = (req,res,next) =>{
                     //資料傳進來的格式不符合email的re就會傳出error
                     DB.insert('user', user, (error, data) =>{
                         if (error) {
-                            return res.status(500).json({
+                            return res.status(400).json({
                                 error : err
                             })
                         }
@@ -56,7 +59,8 @@ exports.userSignup = (req,res,next) =>{
                                 _id: user._id,
                                 username: user.username,
                                 createTime: user.createTime,
-                                status: user.status
+                                status: user.status,
+                                points: user.points,
                             },
                             token: token
                         });
@@ -75,7 +79,7 @@ exports.userLogin = (req,res,next) =>{
 
     DB.find('user',{username: username}, (error, user) =>{
         if (error) {
-            return res.status(500).json({
+            return res.status(400).json({
                 error: err
             })
         }
@@ -95,18 +99,20 @@ exports.userLogin = (req,res,next) =>{
 
             if(result){
                 const token = jwt.sign({
-                        username: user[0].username,
-                        _id: user[0]._id,
-                    },keyForToken,{
-                        expiresIn: "72h",
-                    });
+                    username: user[0].username,
+                    _id: user[0]._id,
+                },keyForToken,{
+                    expiresIn: "72h",
+                });
                 return res.status(200).json({
                     message:'Login successfully',
                     user: {
                         _id: user[0]._id,
                         username: user[0].username,
                         createTime: user[0].createTime,
-                        status: user[0].status
+                        status: user[0].status,
+                        points: user[0].points,
+
                     },
                     token: token
                 })
@@ -120,6 +126,85 @@ exports.userLogin = (req,res,next) =>{
 
 }
 
+exports.updateUsername = (req,res,next) =>{
+
+    const userId = req.body.userId
+    const newName = req.body.newName
+    var _id;
+
+    try {
+        _id = DB.ObjectID(userId)
+
+        DB.find('user',{_id: _id}, (error, user) =>{
+            if (error) {
+                return res.status(400).json({
+                    message:'Get user info failed, cause database connection.'
+                })
+            }
+
+            if(user.length <= 0){
+                res.status(400).json({
+                    message:'Get nothing with this user id.'
+                })
+            } else {
+                console.log(newName);
+
+                if (newName.trim().length != 0) {
+                    DB.find('user',{username: newName}, (error, user02) =>{
+                        if (error) {
+                            return res.status(400).json({
+                                error: err
+                            })
+                        }
+                        if(user02.length > 0){
+                            console.log(user02);
+                            res.status(400).json({
+                                message:'Come on,Update new username failed, cause username exists.'
+                            })
+                        }else{
+                            console.log(user);
+                            DB.update('user',
+                                {username: user[0].username},
+                                {username: newName},
+                                (error, data) => {
+                                    if (error) {
+                                        return res.status(400).json({
+                                            error: error,
+                                            message:'Update username failed, Please try again.'
+                                        })
+                                    }
+                                    res.status(201).json({
+                                        message:'Update username successfully.',
+                                        user: {
+                                            _id: user[0]._id,
+                                            username: newName,
+                                            createTime: user[0].createTime,
+                                            status: user[0].status,
+                                            points: user[0].points + EACH_POINT,
+                                        }
+
+                                    })
+                                })
+                        }
+                    })
+                } else {
+                    res.status(400).json({
+                        message:'Are you kidding me ? Do you think empty new name is reasonable? .'
+                    })
+                }
+
+
+
+            }
+        })
+
+    } catch (error) {
+        res.status(400).json({
+            message:'Format of user id is incorrect.'
+        })
+    }
+
+}
 
 exports.getUserInfoById = (req,res,next) =>{
 
@@ -131,13 +216,13 @@ exports.getUserInfoById = (req,res,next) =>{
 
         DB.find('user',{_id: _id}, (error, user) =>{
             if (error) {
-                return res.status(500).json({
+                return res.status(400).json({
                     message:'Get user info failed, cause database connection.'
                 })
             }
 
             if(user.length <= 0){
-                res.status(500).json({
+                res.status(400).json({
                     message:'Get nothing with this user id.'
                 })
             } else {
@@ -147,14 +232,15 @@ exports.getUserInfoById = (req,res,next) =>{
                         _id: user[0]._id,
                         username: user[0].username,
                         createTime: user[0].createTime,
-                        status: user[0].status
+                        status: user[0].status,
+                        points: user[0].points,
                     }
                 })
             }
         })
 
     } catch (error) {
-        res.status(500).json({
+        res.status(400).json({
             message:'Format of user id is incorrect.'
         })
     }
@@ -171,13 +257,13 @@ exports.userDelete = (req,res,next) =>{
 
         DB.find('user',{_id: _id}, (error, user) =>{
             if (error) {
-                return res.status(500).json({
+                return res.status(400).json({
                     message:'user delete failed, cause database connection.'
                 })
             }
 
             if(user.length <= 0){
-                res.status(500).json({
+                res.status(400).json({
                     message:'user id is missing or incorrect.'
                 })
             } else {
@@ -185,7 +271,7 @@ exports.userDelete = (req,res,next) =>{
                     "_id": _id
                 }, (error, data) => {
                     if (error) {
-                        res.status(500).json({
+                        res.status(400).json({
                             message:'user delete failed.'
                         })
                     } else {
@@ -205,8 +291,42 @@ exports.userDelete = (req,res,next) =>{
         })
 
     } catch (error) {
-        res.status(500).json({
+        res.status(400).json({
             message:'Format of user id is incorrect.'
         })
     }
+}
+
+
+
+exports.getAllUsers = (req,res,next) =>{
+
+    DB.find('user',{}, (error, users) =>{
+        if (error) {
+            return res.status(400).json({
+                error: err
+            })
+        }
+
+        var usersTemp = []
+        for (index in users) {
+            var user = {
+                _id: users[index]._id,
+                status: users[index].status,
+                username: users[index].username,
+                points: users[index].points,
+                createTime: users[index].createTime,
+            }
+            console.log(user);
+            usersTemp.push(user)
+        }
+
+        res.status(200).json({
+            message:'Get all users successfully',
+            count: users.length,
+            users: usersTemp
+        })
+
+    })
+
 }
