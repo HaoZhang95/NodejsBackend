@@ -19,48 +19,54 @@ exports.getAllCategories = (req,res,next)=>{
 }
 
 exports.addNewCategory = (req,res,next)=>{
+    const form = new multiparty.Form()
 
-    const categoryName = req.body.name
+    form.parse(req, (error, textFields, files) => {
+        const categoryName = textFields.name[0]
 
-    console.log(categoryName);
+        console.log(categoryName);
 
-    DB.find('category',{name: categoryName}, (error, category) =>{
-        if (error) {
-            return res.status(400).json({
-                error: err
-            })
-        }
-
-        if(category.length > 0){
-            res.status(400).json({
-                message:'category name exists already.'
-            })
-        }else{
-            const category = {
-                _id: new DB.ObjectID,
-                name: categoryName,
-                createTime: new Date(),
+        DB.find('category',{name: categoryName}, (error, category) =>{
+            if (error) {
+                return res.status(400).json({
+                    error: err
+                })
             }
 
-            //資料傳進來的格式不符合email的re就會傳出error
-            DB.insert('category', category, (error, data) =>{
-                if (error) {
-                    return res.status(400).json({
-                        error : err
-                    })
+            if(category.length > 0){
+                res.status(400).json({
+                    message:'category name exists already.'
+                })
+            }else{
+                const category = {
+                    _id: new DB.ObjectID,
+                    name: categoryName,
+                    createTime: new Date(),
                 }
-                res.status(201).json({
-                    message:'Category created successfully.',
-                    category: {
-                        _id: category._id,
-                        name: categoryName,
-                        createTime: category.createTime,
+
+                //資料傳進來的格式不符合email的re就會傳出error
+                DB.insert('category', category, (error, data) =>{
+                    if (error) {
+                        return res.status(400).json({
+                            error : err
+                        })
                     }
-                });
-            })
-        }
+                    res.status(201).json({
+                        message:'Category created successfully.',
+                        category: {
+                            _id: category._id,
+                            name: categoryName,
+                            createTime: category.createTime,
+                        }
+                    });
+                })
+            }
+
+        })
 
     })
+
+
 }
 
 exports.getCategoryById = (req,res,next) =>{
