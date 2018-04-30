@@ -1,4 +1,5 @@
 
+const multiparty = require('multiparty')
 const DB = require('../../../modules/db')
 
 exports.getAllCategories = (req,res,next)=>{

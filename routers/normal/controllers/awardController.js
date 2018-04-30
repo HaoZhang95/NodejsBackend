@@ -1,4 +1,4 @@
-
+const multiparty = require('multiparty')
 const DB = require('../../../modules/db')
 
 const EACH_POINT = 10
