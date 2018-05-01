@@ -4,20 +4,23 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken');
 const keyForToken = "secret"
 
-const multiparty = require('multiparty')
+// const multiparty = require('multiparty')
 
 const EACH_POINT = 10
 
 
 exports.userSignup = (req,res,next) =>{
 
-    const form = new multiparty.Form()
+    // const form = new multiparty.Form()
 
-    form.parse(req, (error, textFields, files) => {
+    //form.parse(req, (error, textFields, files) => {
 
 
-        const username = textFields.username[0]
-        const password = textFields.password[0]
+        // const username = textFields.username[0]
+        // const password = textFields.password[0]
+
+    const username = req.body.username
+    const password = req.body.password
 
         console.log(username);
         console.log(password);
@@ -81,19 +84,21 @@ exports.userSignup = (req,res,next) =>{
             }
 
         })
-    })
+    //})
 
 }
 
 exports.userLogin = (req,res,next) =>{
 
-    const form = new multiparty.Form()
+    //const form = new multiparty.Form()
 
-    form.parse(req, (error, textFields, files) => {
+    //form.parse(req, (error, textFields, files) => {
 
-        const username = textFields.username[0]
-        const password = textFields.password[0]
+       // const username = textFields.username[0]
+        //const password = textFields.password[0]
 
+    const username = req.body.username
+    const password = req.body.password
         console.log(username);
         console.log(password);
 
@@ -145,7 +150,7 @@ exports.userLogin = (req,res,next) =>{
         })
 
 
-    })
+    //})
 
 
 
@@ -154,12 +159,15 @@ exports.userLogin = (req,res,next) =>{
 
 exports.updateUsername = (req,res,next) =>{
 
-    const form = new multiparty.Form()
+    //const form = new multiparty.Form()
 
-    form.parse(req, (error, textFields, files) => {
+    //form.parse(req, (error, textFields, files) => {
 
-        const userId = textFields.userId[0]
-        const newName = textFields.newName[0]
+        // const userId = textFields.userId[0]
+        // const newName = textFields.newName[0]
+
+    const userId = req.body.userId
+    const newName = req.body.newName
 
         console.log(userId);
         console.log(newName);
@@ -237,7 +245,7 @@ exports.updateUsername = (req,res,next) =>{
                 message:'Format of user id is incorrect.'
             })
         }
-    })
+   // })
 
 
 
